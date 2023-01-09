@@ -1,0 +1,13 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:FairPostgre"
+
+    - path: "app/Main.hs"
+      component: "FairPostgre:exe:FairPostgre-exe"
+
+    - path: "app/Paths_FairPostgre.hs"
+      component: "FairPostgre:exe:FairPostgre-exe"
+
+    - path: "test"
+      component: "FairPostgre:test:FairPostgre-test"
