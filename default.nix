@@ -27,12 +27,8 @@ in
       pkgs.ormolu
       pkgs.hpack
       compiler.ghc
-      # pkgs.postgresql
-      # pkgs.zlib
-      # pkgs.postgresql-contrib
-      # pkgs.haskellPackages.record-dot-preprocessor
+      pkgs.postgresql_13
+      pkgs.haskellPackages.record-dot-preprocessor
     ];
 
 }
-
-# to run HLS 1) delete Setup.hs 2) run 'gen-hie > hie.yaml

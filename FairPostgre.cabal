@@ -25,7 +25,14 @@ source-repository head
 
 library
   exposed-modules:
+      Adapter.PostgreSQL
+      Adapter.ResponseParser
+      Domain.Messenger
+      Domain.QueryRoutine
+      Example
       Lib
+      Logger
+      Utils
   other-modules:
       Paths_FairPostgre
   hs-source-dirs:
@@ -33,8 +40,16 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , cryptohash
+    , data-has
+    , memory
     , mtl
     , network
+    , record-hasfield
+    , text
+    , text-show
+    , time
   default-language: Haskell2010
 
 executable FairPostgre-exe
@@ -47,8 +62,16 @@ executable FairPostgre-exe
   build-depends:
       FairPostgre
     , base >=4.7 && <5
+    , bytestring
+    , cryptohash
+    , data-has
+    , memory
     , mtl
     , network
+    , record-hasfield
+    , text
+    , text-show
+    , time
   default-language: Haskell2010
 
 test-suite FairPostgre-test
@@ -62,6 +85,14 @@ test-suite FairPostgre-test
   build-depends:
       FairPostgre
     , base >=4.7 && <5
+    , bytestring
+    , cryptohash
+    , data-has
+    , memory
     , mtl
     , network
+    , record-hasfield
+    , text
+    , text-show
+    , time
   default-language: Haskell2010

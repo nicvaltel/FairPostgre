@@ -22,7 +22,15 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 - network
+- bytestring
 - mtl
+- data-has
+- cryptohash 
+- time
+- memory
+- text
+- text-show
+- record-hasfield
 
 ghc-options:
 - -Wall
