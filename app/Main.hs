@@ -6,20 +6,20 @@ module Main (main) where
 import Data.ByteString qualified as B
 import Data.Foldable (traverse_)
 import Lib
+import Control.Monad.IO.Class (liftIO)
 
 defaultDBConnInfo :: DBConnectionInfo
 defaultDBConnInfo =
   let username_ = "postgres"
       password_ = "123456"
-      dbName_ = "products"
+      dbName_ = "testdb"
    in DBConnectionInfo
         { hostName = "127.0.0.1",
           port = "5432",
           dbName = dbName_,
           startupMsg = startupMessage username_ dbName_,
           username = "postgres",
-          password = password_,
-          logParams = undefined
+          password = password_
         }
 
 -- | Startup message params. Do not change it without need.
@@ -36,22 +36,14 @@ startupMessage uname database =
       ("extra_float_digits", "3")
     ]
 
--- | Parameters of logging. PrintToConsole, SaveToFile FilePath, PrintAndSaveToFile FilePath and TurnOff possible options
-defaultLogParams :: LogParams
-defaultLogParams =
-  LogParams
-    { paramSaveResultTo = PrintAndSaveToFile "./out_log.log",
-      paramLoggerConnector = PrintAndSaveToFile "./out_log.log",
-      paramLoggerSender = PrintAndSaveToFile "./out_log.log",
-      paramLoggerReciever = PrintAndSaveToFile "./out_log.log"
-    }
 
 -- | Main routine
 routine :: App ()
 routine = do
   conn <- connect
   let run = execQuery conn
-  run "SELECT * FROM products"
+  result <- run "SELECT * FROM furniture"
+  liftIO $ print result
   run queryCreateSchema
   run queryCreatePersonTable
   run queryCreateQTimesTable

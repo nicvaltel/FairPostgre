@@ -19,18 +19,19 @@ import Data.ByteString.Lazy.Internal (smallChunkSize)
 import Data.Has
 import Data.Word (Word32)
 import Domain.Messenger
-    ( LogData(LogResult, LogSendMessage), QueryStr )
+    ( LogData(LogResult, LogSendMessage), QueryStr, QueryAns (ErrorQueryResult) )
 import Domain.Types
 import Network.Socket.ByteString qualified as NetBS
 import Utils
+import Control.Exception (SomeException)
+import Control.Monad.Catch (MonadCatch, catch)
 
-type PostgreDB r m = (Has DBConnectionInfo r, MonadReader r m, MonadIO m)
+type PostgreDB r m = (Has DBConnectionInfo r, MonadReader r m, MonadIO m, MonadCatch m)
 
 -- | Sends a message to connected DB. Official guide https://www.postgresql.org/docs/13/protocol-message-formats.html
 sendMsg :: PostgreDB r m => DBConnection -> SendMessage -> m ()
 sendMsg conn msg = do
   let (ch, bs) = message msg
-  logger (LogSendMessage msg)
   case ch of
     Just c -> sendByteString conn $ BC.singleton c <> B.pack (octets (fromIntegral $ 4 + B.length bs :: Word32)) <> bs
     Nothing -> sendByteString conn $ B.pack (octets (fromIntegral $ 4 + B.length bs :: Word32)) <> bs
@@ -83,13 +84,22 @@ bsNul s = s <> nul -- TODO change to COnstant
 nul :: B.ByteString -- TODO change to COnstant
 nul = BL.toStrict . BLDR.toLazyByteString . BLDR.word8 $ 0 -- TODO simplify if
 
-logger :: PostgreDB r m => LogData -> m ()
-logger logData = pure ()
 
 -- | Send queries and recieve the result
-execQuery :: PostgreDB r m => DBConnection -> QueryStr -> m ()
-execQuery conn query = do
-  sendMsg conn (Query query)
-  bs <- recieveLongByteString conn
-  let result = selectResponseParser bs [] []
-  logger (LogResult result)
+execQuery :: PostgreDB r m => DBConnection -> QueryStr -> m QueryAns 
+execQuery conn query = 
+  -- do
+  -- sendMsg conn (Query query)
+  -- bs <- recieveLongByteString conn
+  -- let result = selectResponseParser bs [] []
+  -- pure result
+
+  catch       
+    (do 
+    sendMsg conn (Query query)
+    bs <- recieveLongByteString conn
+    let result = selectResponseParser bs [] []
+    pure result
+    )
+    (\e -> let err = BC.pack $ show (e :: SomeException )
+          in pure (ErrorQueryResult err))

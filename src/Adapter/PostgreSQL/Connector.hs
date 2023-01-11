@@ -36,7 +36,6 @@ connect = do
   let conn = DBSocket socket
   sendMessage conn conf.startupMsg
   answer <- parseAnswer <$> recieveByteString conn
-  logger (LogConnectorAns answer)
   res <- processAnswer answer conn
   case res of  -- TODO maybe use catch?
     Left err -> error (show err)
@@ -107,13 +106,9 @@ processAnswer (AuthenticationMD5Password salt) conn = do
   let saltedPass = md5 (md5 (BC.pack conf.password <> conf.username) <> salt) -- can be computed in SQL as concat('md5', md5(concat(md5(concat(password, username)), random-salt)))
   sendMessage conn (PasswordMessage $ "md5" <> saltedPass)
   answer <- parseAnswer <$> recieveByteString conn
-  logger (LogConnectorAns answer)
   processAnswer answer conn -- now it should be AuthenticationOk
 processAnswer ans _ = pure $ Left ans -- all other respons are Error
 
 -- for password authentication
 md5 :: B.ByteString -> B.ByteString
 md5 bs = BA.convertToBase BA.Base16 (MD5.hash bs)
-
-logger :: PostgreDB r m => LogData -> m ()
-logger logData = pure ()

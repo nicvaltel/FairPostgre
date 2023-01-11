@@ -5,7 +5,6 @@
 module Domain.Types where
 
 import Data.ByteString qualified as B
-import Logger qualified as L
 import Network.Socket (HostName)
 import Network.Socket qualified as Net
 
@@ -16,7 +15,6 @@ data DBConnectionInfo = DBConnectionInfo
     port :: Port,
     dbName :: B.ByteString,
     startupMsg :: SendMessage,
-    logParams :: L.LogParams,
     username :: B.ByteString,
     password :: String -- TODO if password is not saved, ask for it
   }

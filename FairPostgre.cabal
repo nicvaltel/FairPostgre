@@ -32,7 +32,6 @@ library
       Domain.Messenger
       Domain.Types
       Lib
-      Logger
       Utils
   other-modules:
       Paths_FairPostgre
@@ -44,6 +43,7 @@ library
     , bytestring
     , cryptohash
     , data-has
+    , exceptions
     , memory
     , mtl
     , network
@@ -66,6 +66,7 @@ executable FairPostgre-exe
     , bytestring
     , cryptohash
     , data-has
+    , exceptions
     , memory
     , mtl
     , network
@@ -89,6 +90,7 @@ test-suite FairPostgre-test
     , bytestring
     , cryptohash
     , data-has
+    , exceptions
     , memory
     , mtl
     , network

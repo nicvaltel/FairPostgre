@@ -30,7 +30,6 @@ data ResultValue
 
 type ResultRow = [ResultValue]
 
--- type QueryResult = (Headers, [ResultRow])
 
 type Header = String
 
@@ -38,7 +37,6 @@ type Headers = [Header]
 
 type QueryStr = B.ByteString
 
--- type MessageFinished = Bool
 
 data LogData
   = LogResult QueryAns
@@ -51,6 +49,5 @@ data LogData
 class Monad m => Messenger m where
   sendMessage :: DBConnection -> SendMessage -> m ()
   recieveByteString :: DBConnection -> m B.ByteString
-  execQuery :: DBConnection -> QueryStr -> m ()
+  execQuery :: DBConnection -> QueryStr -> m QueryAns
 
--- logger :: m ()
