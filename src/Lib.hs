@@ -2,28 +2,40 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib where
+module Lib
+  ( App (..),
+    runApp,
+    Messenger (..),
+    Connector (..),
+    DBConnectionInfo (..),
+    LogParams (..),
+    SendMessage (..),
+    QueryStr,
+    LogTo (..),
+  )
+where
 
-import Adapter.PostgreSQL qualified as PG
+import Adapter.PostgreSQL.Connector qualified as PG
+import Adapter.PostgreSQL.Messenger qualified as PG
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.Reader (MonadReader, ReaderT (runReaderT))
+import Domain.Connector
 import Domain.Messenger
+import Domain.Types
+import Logger
 
 newtype App a = App {unApp :: ReaderT DBConnectionInfo IO a}
   deriving (Applicative, Functor, Monad, MonadReader DBConnectionInfo, MonadIO, MonadFail)
 
 instance Messenger App where
+  sendMessage = PG.sendMsg
+  execQuery = PG.execQuery
+  recieveByteString = PG.recieveByteString
+
+instance Connector App where
   getDBConnectionInfo = PG.getDBConnectionInfo
   connect = PG.connect
   closeConnection = PG.closeConn
-  sendMessage = PG.sendMsg
-  execQuery = PG.execQuery
-
 
 runApp :: DBConnectionInfo -> App a -> IO a
 runApp conf (App app) = runReaderT app conf
-
-
-
-  
-

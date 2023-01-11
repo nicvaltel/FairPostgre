@@ -25,11 +25,12 @@ source-repository head
 
 library
   exposed-modules:
-      Adapter.PostgreSQL
-      Adapter.ResponseParser
+      Adapter.PostgreSQL.Connector
+      Adapter.PostgreSQL.Messenger
+      Adapter.PostgreSQL.ResponseParser
+      Domain.Connector
       Domain.Messenger
-      Domain.QueryRoutine
-      Example
+      Domain.Types
       Lib
       Logger
       Utils
